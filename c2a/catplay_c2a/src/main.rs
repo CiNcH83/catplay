@@ -12,14 +12,14 @@ compile_error!("features `jemalloc` and `mimalloc` are mutually exclusive");
 #[global_allocator]
 static GLOBAL_ALLOCATOR: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
-#[cfg(feature = "jemalloc")]
+#[cfg(all(feature = "jemalloc", not(target_arch = "riscv32")))]
 #[global_allocator]
 static GLOBAL_ALLOCATOR: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
 
-#[cfg(feature = "jemalloc")]
+#[cfg(all(feature = "jemalloc", not(target_arch = "riscv32")))]
 use tikv_jemalloc_sys as _;
 
-#[cfg(feature = "jemalloc")]
+#[cfg(all(feature = "jemalloc", not(target_arch = "riscv32")))]
 fn disable_jemalloc_thread_cache() {
     let mut enabled = false;
     let result = unsafe {
@@ -38,7 +38,7 @@ fn disable_jemalloc_thread_cache() {
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
-    #[cfg(feature = "jemalloc")]
+    #[cfg(all(feature = "jemalloc", not(target_arch = "riscv32")))]
     disable_jemalloc_thread_cache();
 
     println!("Booting!!");

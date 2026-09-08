@@ -53,10 +53,12 @@ if-addrs = "0.14.0"
 async-trait = "0.1.89"
 thiserror = "2.0.16"
 #rtkit-rs = "0.1.0"
+
+bytes = "1.11.0"
+mimalloc = { version = "0.1.46", optional = true, default-features = false }
+
+[target.'cfg(not(target_arch = "riscv32"))'.dependencies]
 tikv-jemallocator = { version = "0.7.0", optional = true, default-features = false }
 tikv-jemalloc-sys = { version = "0.7.0", optional = true, features = [
     "override_allocator_on_supported_platforms",
 ] }
-
-bytes = "1.11.0"
-mimalloc = { version = "0.1.46", optional = true, default-features = false }
