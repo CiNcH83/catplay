@@ -40,6 +40,9 @@ members = [
     "async/catplay_async_derive",
 ]
 
+[patch.crates-io]
+libc = { git = "https://github.com/rust-lang/libc", rev = "a1fcda25057b609984288ba2a280011367a493c1" }
+
 [profile.release]
 opt-level = "s"   # z
 lto = true
