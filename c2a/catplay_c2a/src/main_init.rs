@@ -1,9 +1,8 @@
 use std::{error::Error, fs};
 
 use crate::{AppConfig, CarPlayOutputManager, HomeKitManager, MfiManager};
-use catplay_iap2_usb_gadget::gadget::GadgetHelper;
+// use catplay_iap2_usb_gadget::gadget::GadgetHelper;
 use catplay_util::{EventReconciler, EventSleeper};
-use log::error;
 use tokio::signal;
 
 fn parse_config(path: String) -> Result<AppConfig, String> {
@@ -37,11 +36,11 @@ impl Main {
     pub async fn start() -> Result<Main, Box<dyn Error>> {
         let config = parse_config("./c2a.toml".into()).or(parse_config("/etc/catplay/catplay.conf".into()))?;
 
-        if let Err(_err) = GadgetHelper::cleanup_once() {
-            error!("Failed to clean up gadgets, continuing anyway");
-        }
+        // if let Err(_err) = GadgetHelper::cleanup_once() {
+        //     error!("Failed to clean up gadgets, continuing anyway");
+        // }
 
-        GadgetHelper::cleanup_once()?;
+        // GadgetHelper::cleanup_once()?;
 
         let mut mfi = MfiManager::new();
         mfi.start(&config)?;

@@ -8,7 +8,7 @@ use catplay_carplay::{
     carplay_rx::sink::AirPlayServerShared,
     carplay_tx::{AirPlayTransmitterImpl, AirPlayTransmitterSessionError, TeardownGuard},
 };
-use catplay_carplay_rx_gadget::{CarPlayUsbGadget, CarPlayWirelessGadget, CarPlayWirelessGadgetError, CarPlayWirelessGadgetState};
+use catplay_carplay_rx_gadget::{CarPlayWirelessGadget, CarPlayWirelessGadgetError, CarPlayWirelessGadgetState};
 use catplay_carplay_tx_gadget::client::{CarPlayUsbClientGadget, CarPlayUsbClientGadgetError, CarPlayUsbClientGadgetStatus};
 use catplay_hap::HomekitStorageRef;
 use catplay_iap2_usb::GadgetError;
@@ -45,7 +45,7 @@ pub struct ProdGadget {
     cfg: ProdGadgetConfig,
 
     rx: Option<Reconciler<CarPlayWirelessGadget<CarPlayRxSession>>>,
-    rx_usb: Option<Reconciler<CarPlayUsbGadget<CarPlayRxSession>>>,
+    // rx_usb: Option<Reconciler<CarPlayUsbGadget<CarPlayRxSession>>>,
     tx: Option<Reconciler<CarPlayUsbClientGadget>>,
     pending_transmitter: Arc<TokioMutex<Option<TeardownGuard<AirPlayTransmitterImpl>>>>,
 
@@ -104,7 +104,7 @@ impl ProdGadget {
         Reconciler::new(
             Self {
                 cfg,
-                rx_usb: None,
+                // rx_usb: None,
                 rx: None,
                 tx: None,
                 pending_transmitter: Default::default(),
@@ -123,9 +123,9 @@ impl AsyncShutdown for ProdGadget {
         if let Some(mut rx) = self.rx.take() {
             rx.shutdown().await;
         }
-        if let Some(mut rx_usb) = self.rx_usb.take() {
-            rx_usb.shutdown().await;
-        }
+        // if let Some(mut rx_usb) = self.rx_usb.take() {
+        //     rx_usb.shutdown().await;
+        // }
         if let Some(mut tx) = self.tx.take() {
             tx.shutdown().await;
         }
@@ -146,7 +146,13 @@ impl EventSleeper for ProdGadget {
             Duration::from_millis(500)
         };
 
-        event_select!(pending_transmitter.as_mut(), self.tx, self.rx_usb, self.rx, deadline_after(fallback))
+        event_select!(
+            pending_transmitter.as_mut(),
+            self.tx,
+            // self.rx_usb,
+            self.rx,
+            deadline_after(fallback)
+        )
     }
 }
 
@@ -181,7 +187,7 @@ impl Reconcilable for ProdGadget {
 
     async fn render(&mut self, prev: LocalStatus, update: Instant) -> LocalStatus {
         let _ = self.rx.reconcile().await;
-        let _ = self.rx_usb.reconcile().await;
+        // let _ = self.rx_usb.reconcile().await;
         let _ = self.tx.reconcile().await;
 
         let Ok(_status) = prev.as_ref() else {

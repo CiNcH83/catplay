@@ -26,7 +26,7 @@ catplay_bt = { path = "../../bluetooth/catplay_bt" }
 catplay_hap = { path = "../../core/catplay_hap" }
 catplay_carplay = { path = "../../carplay/catplay_carplay" }
 catplay_iap2_usb = { path = "../../usb/catplay_iap2_usb" }
-catplay_iap2_usb_gadget = { path = "../../usb/catplay_iap2_usb_gadget" }
+# catplay_iap2_usb_gadget = { path = "../../usb/catplay_iap2_usb_gadget" }
 catplay_iap2_usb_host = { path = "../../usb/catplay_iap2_usb_host" }
 catplay_iap2_client = { path = "../../async/catplay_iap2_client" }
 catplay_csm = { path = "../../core/catplay_csm" }

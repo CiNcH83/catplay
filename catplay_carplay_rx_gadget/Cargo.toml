@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 catplay_iap2_usb_host = { path = "../usb/catplay_iap2_usb_host" }
 catplay_iap2_usb = { path = "../usb/catplay_iap2_usb" }
-catplay_iap2_usb_gadget = { path = "../usb/catplay_iap2_usb_gadget" }
+catplay_iap2_usb_gadget = { path = "../usb/catplay_iap2_usb_gadget", optional = true }
 catplay_iap2_client = { path = "../async/catplay_iap2_client" }
 catplay_iap2_bt = { path = "../bluetooth/catplay_iap2_bt" }
 catplay_util = { path = "../core/catplay_util" }
@@ -23,3 +23,8 @@ log = "0.4.28"
 macaddr = "1.0.1"
 futures = "0.3.31"
 thiserror = "2.0.17"
+
+[features]
+# The usb-gadget dependency is not available on riscv32.
+default = []
+usb = ["dep:catplay_iap2_usb_gadget"]
