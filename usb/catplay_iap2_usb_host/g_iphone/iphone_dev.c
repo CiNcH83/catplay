@@ -284,6 +284,9 @@ static const char *iphone_dev_role_switch_name(const char *gadget_name)
 
 	if (!strcmp(gadget_name, "2184200.usb"))
 		return "ci_hdrc.1";
+	/* V821 exposes MUSB through a child UDC of the USB glue device. */
+	if (!strcmp(gadget_name, "musb-hdrc.1.auto"))
+		return "44100000.usb";
 
 	return gadget_name;
 }
@@ -293,10 +296,16 @@ static int iphone_dev_update_role_switch_name_from_gadget(struct iphone_dev_data
 	const char *gadget_name;
 	const char *rs_name;
 
-	if (!data || !data->cdev || !data->cdev->gadget)
+	if (!data)
 		return -ENODEV;
 
-	gadget_name = data->cdev->gadget->name;
+	if (data->udc[0])
+		gadget_name = data->udc;
+	else if (data->cdev && data->cdev->gadget)
+		gadget_name = data->cdev->gadget->name;
+	else
+		return -ENODEV;
+
 	rs_name = iphone_dev_role_switch_name(gadget_name);
 	if (!rs_name)
 		return -ENODEV;
