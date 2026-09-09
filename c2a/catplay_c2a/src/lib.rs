@@ -1,3 +1,5 @@
+#![recursion_limit = "256"]
+
 mod config;
 mod cp_output_manager;
 mod homekit_manager;
