@@ -273,6 +273,28 @@ fn test_render() {
 }
 
 #[test]
+fn test_rendered_frame_can_be_serialized_by_transmitter() {
+    use catplay_carplay::{clock::MediaClockSession, screen::ScreenFrame};
+
+    let mut renderer = UiRenderer::new(800, 480, 60, 160.0, None).unwrap();
+    let frame = renderer
+        .render_and_encode_frame(
+            UiState::Connecting {
+                device: "Test".into(),
+                ticks: 0,
+            },
+            Duration::ZERO,
+            false,
+        )
+        .unwrap();
+
+    assert!(!frame.data.is_empty(), "x264 must emit the first frame without requiring a flush");
+
+    ScreenFrame::video_proxied(frame, 4, &MediaClockSession::new())
+        .expect("renderer output must be accepted by the transmitter NAL serializer");
+}
+
+#[test]
 fn test_waiting_for_connection_keyframe_cache_cycle() {
     use catplay_tracing::logger::setup_test_logger;
     use std::time::{Duration, SystemTime, UNIX_EPOCH};
