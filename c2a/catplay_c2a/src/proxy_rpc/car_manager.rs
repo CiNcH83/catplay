@@ -83,8 +83,13 @@ impl CarManager {
         let car_media_clock = car.media_clock();
         let screen = info.displays.first().ok_or(RtspError::Unknown)?;
 
-        let (width, height, dpi) = (screen.width_pixels, screen.height_pixels, screen.dpi());
-        let overlay = OverlayManager::new(width, height, dpi, persist_dir);
+        let (width, height, fps, dpi) = (
+            screen.width_pixels,
+            screen.height_pixels,
+            screen.max_fps.unwrap_or(30),
+            screen.dpi(),
+        );
+        let overlay = OverlayManager::new(width, height, fps, dpi, persist_dir);
 
         Ok(Self {
             car_media_clock,
